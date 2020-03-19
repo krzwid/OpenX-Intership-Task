@@ -30,9 +30,6 @@ subTree_test() ->
   ?assertEqual({5,nil,nil}, tree:subTree(OurTree, [l,r])),
   ?assertEqual({0,{2,nil,nil},{8,nil,{5,nil,nil}}}, tree:subTree(OurTree, [r,r])).
 
-
-
-
 sumTree_test() ->
   T = {1, {2, {4, nil, nil}, {5, nil, nil}}, {3, {6, nil, nil}, {7, nil, nil}}},
   ?assertEqual(28, tree:sumTree(T)),

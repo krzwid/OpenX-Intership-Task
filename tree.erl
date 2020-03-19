@@ -18,7 +18,6 @@ subTree({_, Left, Right}, [Head | Tail]) ->
     l -> subTree(Left, Tail)
   end.
 
-
 sumTree(nil) -> 0;
 sumTree({Number, Left, Right}) -> Number + sumTree(Left) + sumTree(Right).
 
