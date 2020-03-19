@@ -1,5 +1,5 @@
 -module(tree).
--export([sumTree/1, numElements/1, average/1, lessThan/2, grtEqThan/2, qs/1, elements/1, sortTree/1, median/1, makeTree/3, subTree/2]).
+-export([makeTree/3, subTree/2, sumTree/1, numElements/1, average/1, elements/1, median/1]).
 
 makeTree(empty, root, nil) -> nil;
 makeTree(_, root, InsertedNumber) -> {InsertedNumber, nil, nil};

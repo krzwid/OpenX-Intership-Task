@@ -2,26 +2,26 @@
 -include_lib("eunit/include/eunit.hrl").
 
 makeTree_test() ->
-  ?assertEqual({5,nil,nil}, tree:makeTree(empty, root, 5)),
   T1 = {5,nil,nil},
-  ?assertEqual({5,{3,nil,nil},nil}, tree:makeTree(T1, [l], 3)),
+  ?assertEqual(T1, tree:makeTree(empty, root, 5)),
   T2 = {5,{3,nil,nil},nil},
-  ?assertEqual({5,{3,{2,nil,nil},nil},nil}, tree:makeTree(T2, [l,l], 2)),
+  ?assertEqual(T2, tree:makeTree(T1, [l], 3)),
   T3 = {5,{3,{2,nil,nil},nil},nil},
-  ?assertEqual({5,{3,{2,nil,nil},{5,nil,nil}},nil}, tree:makeTree(T3, [l,r], 5)),
+  ?assertEqual(T3, tree:makeTree(T2, [l,l], 2)),
   T4 = {5,{3,{2,nil,nil},{5,nil,nil}},nil},
-  ?assertEqual({5,{3,{2,nil,nil},{5,nil,nil}},{7,nil,nil}}, tree:makeTree(T4, [r], 7)),
+  ?assertEqual(T4, tree:makeTree(T3, [l,r], 5)),
   T5 = {5,{3,{2,nil,nil},{5,nil,nil}},{7,nil,nil}},
-  ?assertEqual({5,{3,{2,nil,nil},{5,nil,nil}},{7,{1,nil,nil},nil}}, tree:makeTree(T5, [r,l], 1)),
+  ?assertEqual(T5, tree:makeTree(T4, [r], 7)),
   T6 = {5,{3,{2,nil,nil},{5,nil,nil}},{7,{1,nil,nil},nil}},
-  ?assertEqual({5,{3,{2,nil,nil},{5,nil,nil}},{7,{1,nil,nil},{0,nil,nil}}}, tree:makeTree(T6, [r,r], 0)),
+  ?assertEqual(T6, tree:makeTree(T5, [r,l], 1)),
   T7 = {5,{3,{2,nil,nil},{5,nil,nil}},{7,{1,nil,nil},{0,nil,nil}}},
-  ?assertEqual({5,{3,{2,nil,nil},{5,nil,nil}},{7,{1,nil,nil},{0,{2,nil,nil},nil}}}, tree:makeTree(T7, [r,r,l], 2)),
+  ?assertEqual(T7, tree:makeTree(T6, [r,r], 0)),
   T8 = {5,{3,{2,nil,nil},{5,nil,nil}},{7,{1,nil,nil},{0,{2,nil,nil},nil}}},
-  ?assertEqual({5,{3,{2,nil,nil},{5,nil,nil}},{7,{1,nil,nil},{0,{2,nil,nil},{8,nil,nil}}}}, tree:makeTree(T8, [r,r,r], 8)),
+  ?assertEqual(T8, tree:makeTree(T7, [r,r,l], 2)),
   T9 = {5,{3,{2,nil,nil},{5,nil,nil}},{7,{1,nil,nil},{0,{2,nil,nil},{8,nil,nil}}}},
-  ?assertEqual({5,{3,{2,nil,nil},{5,nil,nil}},{7,{1,nil,nil},{0,{2,nil,nil},{8,nil,{5,nil,nil}}}}}, tree:makeTree(T9, [r,r,r,r],5)).
-%%T10 = {5,{3,{2,nil,nil},{5,nil,nil}},{7,{1,nil,nil},{0,{2,nil,nil},{8,nil,{5,nil,nil}}}}}
+  ?assertEqual(T9, tree:makeTree(T8, [r,r,r], 8)),
+  OurTree = {5,{3,{2,nil,nil},{5,nil,nil}},{7,{1,nil,nil},{0,{2,nil,nil},{8,nil,{5,nil,nil}}}}},
+  ?assertEqual(OurTree, tree:makeTree(T9, [r,r,r,r],5)).
 
 subTree_test() ->
   OurTree = {5,{3,{2,nil,nil},{5,nil,nil}},{7,{1,nil,nil},{0,{2,nil,nil},{8,nil,{5,nil,nil}}}}},
