@@ -10,7 +10,7 @@
  - *tree_tests.erl* - tests of every function implemented in tree.erl (to run all tests use: *tree_test:test().*).
  
  ## Example:
- ![](./OurTree.png)
+ ![](./OurTree.PNG)
  
  Creating tree:
  - OurTree = {5,{3,{2,nil,nil},{5,nil,nil}},{7,{1,nil,nil},{0,{2,nil,nil},{8,nil,{5,nil,nil}}}}}.
