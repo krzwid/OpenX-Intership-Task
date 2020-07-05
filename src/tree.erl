@@ -2,7 +2,6 @@
 -export([makeTree/1, addLeaf/3, getSubtree/2,
   sumSubtree/2,  averageSubtree/2, medianSubtree/2,
   get_verical_lines/2]).
-
 -export([draw/1, get_verical_lines/1]).
 
 makeTree(Root) -> {Root, nil, nil}.
@@ -12,21 +11,21 @@ addLeaf({Root, Left, Right}, Where, Number) ->
     [r] ->
       case Right of
         nil -> {Root, Left, {Number, nil, nil}};
-        _ -> {error,"Canot insert root in this place"}
+        _ -> {error,"Cannot insert root in this place"}
       end;
     [l] ->
       case Left of
         nil -> {Root, {Number, nil, nil}, Right};
-        _ -> {error,"Canot insert root in this place"}
+        _ -> {error,"Cannot insert root in this place"}
       end;
     [r | Tail] ->
       case Right of
-        nil -> {error,"Canot insert root in this place"};
+        nil -> {error,"Cannot insert root in this place"};
         _ -> {Root, Left, addLeaf(Right, Tail, Number)}
       end;
     [l | Tail] ->
       case Left of
-        nil -> {error,"Canot insert root in this place"};
+        nil -> {error,"Cannot insert root in this place"};
         _ -> {Root, addLeaf(Left, Tail, Number), Right}
       end
   end.
@@ -36,12 +35,12 @@ getSubtree({_, Left, Right}, [Head | Tail]) ->
   case Head of
     r ->
       case Right of
-        nil -> {error,"Canot get that subtree"};
+        nil -> {error,"Cannot get that subtree"};
         _ ->getSubtree(Right, Tail)
       end;
     l ->
       case Left of
-        nil -> {error,"Canot get that subtree"};
+        nil -> {error,"Cannot get that subtree"};
         _ -> getSubtree(Left, Tail)
       end
   end.
@@ -58,13 +57,17 @@ average(Tree) -> sumTree(Tree) / numerOfLeafs(Tree).
 
 averageSubtree(Tree, []) -> average(Tree);
 averageSubtree(Tree, Direction) ->
-  Subtree = getSubtree(Tree, Direction),
-  average(Subtree).
+  case getSubtree(Tree, Direction) of
+    {error, Message} -> {error, Message};
+    Subtree -> average(Subtree)
+  end.
 
 sumSubtree(Tree, []) -> sumTree(Tree);
 sumSubtree(Tree, Direction) ->
-  Subtree = getSubtree(Tree, Direction),
-  sumTree(Subtree).
+  case getSubtree(Tree, Direction) of
+    {error, Message} -> {error, Message};
+    Subtree -> sumTree(Subtree)
+  end.
 
 median({Root, nil, nil}) -> [Root];
 median(Tree) ->
@@ -85,9 +88,14 @@ elements({Root, Left, Right}) -> elements(Left) ++ [Root]  ++ elements(Right).
 
 medianSubtree(Tree, []) -> median(Tree);
 medianSubtree(Tree, Direction) ->
-  Subtree = getSubtree(Tree, Direction),
-  [Median] = median(Subtree),
-  Median.
+  case getSubtree(Tree, Direction) of
+    {error, Message} -> {error, Message};
+    Subtree ->
+      case median(Subtree) of
+        [Median] -> Median;
+        Median -> Median
+      end
+  end.
 
 %%showTree(nil) ->
 %%  io:format("-- (nil)");
