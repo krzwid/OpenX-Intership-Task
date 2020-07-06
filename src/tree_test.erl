@@ -61,14 +61,14 @@ addLeaf_test_() ->
         Error = {error,"Cannot insert root in this place"},
         ?_assertEqual(Error, tree:addLeaf(T7, [r], 10))
       end()
+    },
+    {"returns error as there is another root",
+      fun() ->
+        T7 = {4,{2,{1,nil,nil},{3,nil,nil}},{6,{5,nil,nil},{7,nil,nil}}},
+        Error = {error,"Cannot insert root in this place"},
+        ?_assertEqual(Error, tree:addLeaf(T7, [r,l], 10))
+      end()
     }
-%%    {"returns error as there is another root",
-%%      fun() ->
-%%        T7 = {4,{2,{1,nil,nil},{3,nil,nil}},{6,{5,nil,nil},{7,nil,nil}}},
-%%        Error = {error,"Cannot insert root in this place"},
-%%        ?_assertEqual(Error, tree:addLeaf(T7, [r,l], 10))
-%%      end()
-%%    }
   ].
 
 getSubtree_test_() ->

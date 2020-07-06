@@ -6,29 +6,22 @@
 
 makeTree(Root) -> {Root, nil, nil}.
 
-addLeaf({Root, Left, Right}, Where, Number) ->
-  case Where of
-    [r] ->
-      case Right of
-        nil -> {Root, Left, {Number, nil, nil}};
-        _ -> {error,"Cannot insert root in this place"}
-      end;
-    [l] ->
-      case Left of
-        nil -> {Root, {Number, nil, nil}, Right};
-        _ -> {error,"Cannot insert root in this place"}
-      end;
-    [r | Tail] ->
-      case Right of
-        nil -> {error,"Cannot insert root in this place"};
-        _ -> {Root, Left, addLeaf(Right, Tail, Number)}
-      end;
-    [l | Tail] ->
-      case Left of
-        nil -> {error,"Cannot insert root in this place"};
-        _ -> {Root, addLeaf(Left, Tail, Number), Right}
-      end
-  end.
+addLeaf({Root, Left, nil}, [r], Number) ->
+  {Root, Left, {Number, nil, nil}};
+addLeaf({Root, nil, Right}, [l], Number) ->
+  {Root, {Number, nil, nil}, Right};
+addLeaf({Root, Left, Right}, [r | Tail], Number) when Right /= nil ->
+  case addLeaf(Right, Tail, Number) of
+    {error, Message} -> {error, Message};
+    Subtree -> {Root, Left, Subtree}
+  end;
+addLeaf({Root, Left, Right}, [l | Tail], Number) when Left /= nil ->
+  case addLeaf(Left, Tail, Number) of
+    {error, Message} -> {error, Message};
+    Subtree -> {Root, Subtree, Right}
+  end;
+addLeaf(_, _, _) ->
+  {error, "Cannot insert root in this place"}.
 
 getSubtree(Tree, []) -> Tree;
 getSubtree({_, Left, Right}, [Head | Tail]) ->
