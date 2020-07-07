@@ -1,7 +1,8 @@
 -module(tree_server).
 -export([start/1, stop/0, init/1]).
 -export([addLeaf/2, showTree/0, getSubtree/1,
-  averageSubtree/1, sumSubtree/1, medianSubtree/1]).
+  averageSubtree/1, sumSubtree/1, medianSubtree/1,
+  deleteBranch/1]).
 
 init(Root) ->
   loop(tree:makeTree(Root)).
@@ -10,6 +11,15 @@ loop(Tree) ->
   receive
     {request, Pid, addLeaf, {Where, Number} }->
       case tree:addLeaf(Tree, Where, Number) of
+        Error = {error, _ } ->
+          Pid ! {reply, Error},
+          loop(Tree);
+        NewTree ->
+          Pid ! {reply, NewTree},
+          loop(NewTree)
+      end;
+    {request, Pid, deleteBranch, Which }->
+      case tree:deleteBranch(Tree, Which) of
         Error = {error, _ } ->
           Pid ! {reply, Error},
           loop(Tree);
@@ -79,6 +89,9 @@ call(Function, Arguments) ->
 
 addLeaf(Where, Number) ->
   call(addLeaf, {Where, Number}).
+
+deleteBranch(Which) ->
+  call(deleteBranch, Which).
 
 showTree() ->
   call(showTree, {}).

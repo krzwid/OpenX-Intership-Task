@@ -176,3 +176,27 @@ medianSubtree_test_() ->
       end()
     }
   ].
+
+deleteBranch_test_() ->
+  [
+    {"returns new tree without right branch",
+      fun() ->
+        Tree = {4,{2,{1,nil,nil},{3,nil,nil}},{6,{5,nil,nil},{7,nil,nil}}},
+        WithoutRightBranch = {4,{2,{1,nil,nil},{3,nil,nil}},nil},
+        ?_assertEqual(WithoutRightBranch, tree:deleteBranch(Tree, [r]))
+      end()
+    },
+    {"returns new tree without second right branch",
+      fun() ->
+        Tree = {4,{2,{1,nil,nil},{3,nil,nil}},{6,{5,nil,nil},{7,nil,nil}}},
+        WithoutSecondRightBranch = {4,{2,{1,nil,nil},{3,nil,nil}},{6,{5,nil,nil},nil}},
+        ?_assertEqual(WithoutSecondRightBranch, tree:deleteBranch(Tree, [r,r]))
+      end()
+    },
+    {"returns same tree",
+      fun() ->
+        Tree = {4,{2,{1,nil,nil},{3,nil,nil}},{6,{5,nil,nil},{7,nil,nil}}},
+        ?_assertEqual(Tree, tree:deleteBranch(Tree, [r,r,l]))
+      end()
+    }
+  ].

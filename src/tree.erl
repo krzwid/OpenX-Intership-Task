@@ -1,8 +1,9 @@
 -module(tree).
 -export([makeTree/1, addLeaf/3, getSubtree/2,
   sumSubtree/2,  averageSubtree/2, medianSubtree/2,
-  get_verical_lines/2]).
--export([draw/1, get_verical_lines/1]).
+  deleteBranch/2]).
+-export([draw/1,get_verical_lines/2]).
+-export([zip_new/0, get_verical_lines/1]).
 
 makeTree(Root) -> {Root, nil, nil}.
 
@@ -38,15 +39,17 @@ getSubtree({_, Left, Right}, [Head | Tail]) ->
       end
   end.
 
+sumSubtree(Tree, []) -> sumTree(Tree);
+sumSubtree(Tree, Direction) ->
+  case getSubtree(Tree, Direction) of
+    {error, Message} -> {error, Message};
+    Subtree -> sumTree(Subtree)
+  end.
+
+%%private function summing whole tree
 sumTree(nil) -> 0;
 sumTree({Root, nil, nil}) -> Root;
 sumTree({Root, Left, Right}) -> Root + sumTree(Left) + sumTree(Right).
-
-numerOfLeafs(nil) -> 0;
-numerOfLeafs({_, Left, Right}) -> 1 + numerOfLeafs(Left) + numerOfLeafs(Right).
-
-average({Root, nil, nil}) -> Root;
-average(Tree) -> sumTree(Tree) / numerOfLeafs(Tree).
 
 averageSubtree(Tree, []) -> average(Tree);
 averageSubtree(Tree, Direction) ->
@@ -55,29 +58,9 @@ averageSubtree(Tree, Direction) ->
     Subtree -> average(Subtree)
   end.
 
-sumSubtree(Tree, []) -> sumTree(Tree);
-sumSubtree(Tree, Direction) ->
-  case getSubtree(Tree, Direction) of
-    {error, Message} -> {error, Message};
-    Subtree -> sumTree(Subtree)
-  end.
-
-median({Root, nil, nil}) -> [Root];
-median(Tree) ->
-  List = sortLeafs(Tree),
-  NumberOfElements = numerOfLeafs(Tree),
-  Half = NumberOfElements div 2,
-  case (NumberOfElements rem 2) of
-    0 -> (lists:nth(Half+1, List) + lists:nth(Half, List))/2;
-    1 -> lists:nth(Half+1, List)
-  end.
-
-sortLeafs(Tree) ->
-  List = elements(Tree),
-  lists:sort(List).
-
-elements(nil) -> [];
-elements({Root, Left, Right}) -> elements(Left) ++ [Root]  ++ elements(Right).
+%%private function counting the average value of given tree
+average({Root, nil, nil}) -> Root;
+average(Tree) -> sumTree(Tree) / numerOfLeafs(Tree).
 
 medianSubtree(Tree, []) -> median(Tree);
 medianSubtree(Tree, Direction) ->
@@ -89,6 +72,49 @@ medianSubtree(Tree, Direction) ->
         Median -> Median
       end
   end.
+
+%%private function counting median of given tree
+median({Root, nil, nil}) -> [Root];
+median(Tree) ->
+  List = sortLeafs(Tree),
+  NumberOfElements = numerOfLeafs(Tree),
+  Half = NumberOfElements div 2,
+  case (NumberOfElements rem 2) of
+    0 -> (lists:nth(Half+1, List) + lists:nth(Half, List))/2;
+    1 -> lists:nth(Half+1, List)
+  end.
+
+%%private function counting numbers of given tree
+numerOfLeafs(nil) -> 0;
+numerOfLeafs({_, Left, Right}) ->
+  1 + numerOfLeafs(Left) + numerOfLeafs(Right).
+
+%%private function returns sorted list of elements of the tree
+sortLeafs(Tree) ->
+  List = elements(Tree),
+  lists:sort(List).
+
+%%private function returns list of elements of the tree
+elements(nil) -> [];
+elements({Root, Left, Right}) ->
+  elements(Left) ++ [Root]  ++ elements(Right).
+
+deleteBranch({Root, Left, _}, [r]) ->
+  {Root, Left, nil};
+deleteBranch({Root, _, Right}, [l]) ->
+  {Root, nil, Right};
+deleteBranch({Root, Left, Right}, [r | Tail]) when Right /= nil ->
+  case deleteBranch(Right, Tail) of
+    {error, Message} -> {error, Message};
+    Subtree -> {Root, Left, Subtree}
+  end;
+deleteBranch({Root, Left, Right}, [l | Tail]) when Left /= nil ->
+  case deleteBranch(Left, Tail) of
+    {error, Message} -> {error, Message};
+    Subtree -> {Root, Subtree, Right}
+  end;
+deleteBranch(_, _) ->
+  {error, "Cannot delete that branch"}.
 
 %%showTree(nil) ->
 %%  io:format("-- (nil)");
